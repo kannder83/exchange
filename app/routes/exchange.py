@@ -2,15 +2,17 @@
 from typing import Optional, List
 
 # FastAPI
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fastapi import status
 from fastapi import Query
 
 
 # Project
 from app.schemas.exchange import ExchangeOut
-from app.mockdata.exchange_mokedata import exchange_to
 
+
+# crud
+from app.crud import get_exchange_to
 
 router: APIRouter = APIRouter()
 
@@ -45,22 +47,4 @@ def exchange_currency(
     # Return
     - Returns the value or values in the selected currency.
     """
-    currency_total = []
-    if not currency_name:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Bad request")
-
-    if not values_to_exchange:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Bad request")
-
-    currency_for_change = exchange_to()
-
-    for key, value in currency_for_change["rates"].items():
-        if key in currency_name:
-            for item in values_to_exchange:
-                currency_total.append(round(item*value, 2))
-            return ExchangeOut(converted_currency=list(currency_total))
-
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                        detail=f"Currency {currency_name} not found.")
+    return get_exchange_to(currency_name=currency_name, values_to_exchange=values_to_exchange)

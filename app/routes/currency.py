@@ -10,6 +10,9 @@ from fastapi import status, Query
 from app.schemas.exchange import Currency
 from app.mockdata.exchange_mokedata import all_supported_currencies
 
+# crud
+import app.crud as crud
+
 
 router: APIRouter = APIRouter()
 
@@ -45,24 +48,4 @@ def get_currencies(
     - You can query by currency or country name, if not return all available currencies.
     """
 
-    if currency != None:
-        for item in all_supported_currencies():
-            currency_dict = dict(item)
-            code = currency_dict["currency"]
-            if code == currency:
-                return [currency_dict]
-
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"Currency {currency} not found")
-
-    if country != None:
-        for item in all_supported_currencies():
-            country_dict = dict(item)
-            country_name = country_dict["country"]
-            if country_name == country:
-                return [country_dict]
-
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"Country {country} not found")
-
-    return all_supported_currencies()
+    return crud.get_currencies(currency=currency, country=country)
