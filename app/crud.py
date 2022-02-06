@@ -1,7 +1,12 @@
+import requests
+
 from fastapi import HTTPException, status
 from app.schemas.exchange import ExchangeOut
 
 from app.mockdata.exchange_mokedata import all_supported_currencies, exchange_to
+
+
+API_URL = "https://open.er-api.com/v6/latest/USD"
 
 
 def get_currencies(currency: str, country: str):
@@ -30,6 +35,11 @@ def get_currencies(currency: str, country: str):
 
 
 def get_exchange_to(currency_name: str, values_to_exchange: list):
+
+    # req = requests.get(API_URL)
+    # print(req.json()["rates"])
+    # req=req.json()
+
     currency_total = []
     if not currency_name:
         raise HTTPException(
@@ -39,6 +49,7 @@ def get_exchange_to(currency_name: str, values_to_exchange: list):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=f"Bad request")
 
+    # currency_for_change = req.json()
     currency_for_change = exchange_to()
 
     for key, value in currency_for_change["rates"].items():

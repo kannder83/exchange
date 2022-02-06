@@ -12,23 +12,23 @@ services:
       - postgres:postgres
     volumes:
       - ./:/usr/src/app
-    # depends_on:
-    #   - postgres
+    depends_on:
+      - postgres
 
 
-#   postgres:
-#     image: postgres
-#     container_name: dev_postgres
-#     ports:
-#       - 5432:5432
-#     environment:
-#       - POSTGRES_HOST_AUTH_METHOD=password
-#       - POSTGRES_DB=pyfintech
-#       - POSTGRES_PASSWORD=password123
-#     volumes:
-#       - postgres-db:/var/lib/postgresql/data
+  postgres:
+    image: postgres
+    container_name: dev_postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=password
+      - POSTGRES_DB=pyfintech
+      - POSTGRES_PASSWORD=password123
+    volumes:
+      - db-exchange:/var/lib/postgresql/data
 
-# volumes:
-#   postgres-db:
+volumes:
+  db-exchange:
 
   
