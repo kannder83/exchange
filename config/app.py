@@ -4,9 +4,17 @@ from fastapi.middleware.cors import CORSMiddleware
 # routes app:
 from app.routes import currencies_router
 from app.routes import exchanges_router
+from app.routes import update_router
+
+# Models DB:
+from app.models.exchange import Base
+from app.config.database import engine
 
 
 def get_application():
+
+    Base.metadata.create_all(bind=engine)
+
     app = FastAPI(
         title="Exchange",
         version="0.1.1"
@@ -26,6 +34,7 @@ def get_application():
 
     app.include_router(currencies_router)
     app.include_router(exchanges_router)
+    app.include_router(update_router)
 
     @app.get(
         path="/",

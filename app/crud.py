@@ -5,8 +5,13 @@ from app.schemas.exchange import ExchangeOut
 
 from app.mockdata.exchange_mokedata import all_supported_currencies, exchange_to
 
+# from database:
+from app.models.exchange import Currency
+from sqlalchemy.orm import Session
+from app.schemas.exchange import CurrencyEntry
 
-API_URL = "https://open.er-api.com/v6/latest/USD"
+
+API_URL_EXCHANGE = "https://open.er-api.com/v6/latest/USD"
 
 
 def get_currencies(currency: str, country: str):
@@ -36,7 +41,7 @@ def get_currencies(currency: str, country: str):
 
 def get_exchange_to(currency_name: str, values_to_exchange: list):
 
-    # req = requests.get(API_URL)
+    # req = requests.get(API_URL_EXCHANGE)
     # print(req.json()["rates"])
     # req=req.json()
 
@@ -60,3 +65,20 @@ def get_exchange_to(currency_name: str, values_to_exchange: list):
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail=f"Currency {currency_name} not found.")
+
+
+def push_currency_data(db: Session, currency: CurrencyEntry):
+    req = requests.get(API_URL_EXCHANGE)
+    # print(req.json()["rates"])
+    req = req.json()
+    currency_data = Currency(
+        code="COP",
+        value=req["rates"]["COP"],
+        name="Colombian Peso",
+        country="Colombia",
+        updated_at=req["time_last_update_utc"]
+    )
+    db.add(currency_data)
+    db.commit()
+    db.refresh(currency_data)
+    return currency_data
