@@ -10,8 +10,9 @@ from app.models.exchange import Currency
 from sqlalchemy.orm import Session
 from app.schemas.exchange import CurrencyEntry
 
-
-API_URL_EXCHANGE = "https://open.er-api.com/v6/latest/USD"
+# Names of currencies:
+from app.schemas.exchange import CurrencyByCountry
+from app.models.exchange import CurrenciesAllCountries
 
 
 def get_currencies(currency: str, country: str):
@@ -41,10 +42,6 @@ def get_currencies(currency: str, country: str):
 
 def get_exchange_to(currency_name: str, values_to_exchange: list):
 
-    # req = requests.get(API_URL_EXCHANGE)
-    # print(req.json()["rates"])
-    # req=req.json()
-
     currency_total = []
     if not currency_name:
         raise HTTPException(
@@ -54,7 +51,6 @@ def get_exchange_to(currency_name: str, values_to_exchange: list):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=f"Bad request")
 
-    # currency_for_change = req.json()
     currency_for_change = exchange_to()
 
     for key, value in currency_for_change["rates"].items():
@@ -67,18 +63,17 @@ def get_exchange_to(currency_name: str, values_to_exchange: list):
                         detail=f"Currency {currency_name} not found.")
 
 
-def push_currency_data(db: Session, currency: CurrencyEntry):
-    req = requests.get(API_URL_EXCHANGE)
-    # print(req.json()["rates"])
-    req = req.json()
-    currency_data = Currency(
-        code="COP",
-        value=req["rates"]["COP"],
-        name="Colombian Peso",
-        country="Colombia",
-        updated_at=req["time_last_update_utc"]
-    )
-    db.add(currency_data)
+def push_currency_data(db: Session, currency: Currency):
+    item = Currency(**currency.dict())
+    db.add(item)
     db.commit()
-    db.refresh(currency_data)
-    return currency_data
+    db.refresh(item)
+    return item
+
+
+def push_currencies_by_countries(db: Session, currency: CurrenciesAllCountries):
+    item = CurrenciesAllCountries(**currency.dict())
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return item

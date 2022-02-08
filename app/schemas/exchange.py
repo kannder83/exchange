@@ -1,4 +1,5 @@
 # Python
+from datetime import date, datetime
 from typing import List
 
 # Pydantic
@@ -25,7 +26,12 @@ class CurrencyEntry(BaseModel):
     """
     Currency
     """
-    currency: str = Field(..., example="COP")
+    code: str = Field(..., example="COP")
     value: int = Field(..., example=122)
-    name: str = Field(..., example="Colombian Peso")
-    country: str = Field(..., example="Colombia")
+    # updated_at: datetime
+
+
+class CurrencyByCountry(BaseModel):
+    code: str
+    name: str
+    country: str
