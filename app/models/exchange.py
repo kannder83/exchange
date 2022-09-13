@@ -4,7 +4,7 @@ from sqlalchemy.sql.sqltypes import TIMESTAMP, DATE
 from sqlalchemy.sql.expression import text
 
 
-from app.config.database import Base
+from config.database import Base
 
 
 class Currency(Base):

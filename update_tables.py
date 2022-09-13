@@ -3,11 +3,11 @@ from app.mockdata.exchange_mokedata import all_supported_currencies
 from app.crud import push_currencies_by_countries, push_currency_data
 from app.models.exchange import CurrenciesAllCountries, Currency
 from app.schemas.exchange import CurrencyByCountry, CurrencyEntry
-from app.config.database import get_db
+from config.database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
 
-from app.config.database import engine, Base, session
+from config.database import engine, Base, session
 
 API_URL_EXCHANGE = "https://open.er-api.com/v6/latest/USD"
 

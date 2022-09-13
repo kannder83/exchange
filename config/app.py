@@ -7,14 +7,15 @@ from app.routes import exchanges_router
 
 
 # Models DB:
-from app.config.database import engine, Base
+from config.database import engine, Base
 
 
 def get_application():
 
     app = FastAPI(
         title="Exchange",
-        version="0.1.1"
+        version="0.2.1",
+        docs_url="/"
     )
 
     # Configuration CORS:
@@ -29,21 +30,9 @@ def get_application():
         allow_headers=["*"],
     )
 
+    # Routes
     app.include_router(currencies_router)
     app.include_router(exchanges_router)
-
-    @app.get(
-        path="/",
-        tags=["Test"],
-        status_code=status.HTTP_200_OK,
-        summary="Response if server is working well"
-    )
-    def root():
-        """
-        # Test
-        Response if server is up an working!
-        """
-        return {"msg": "works fine!"}
 
     return app
 
